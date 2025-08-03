@@ -1,0 +1,19 @@
+# Copied from https://github.com/DLR-RM/rl-baselines3-zoo/blob/master/.dockerignore
+__pycache__/
+logs
+.pytest_cache/
+.coverage
+.coverage.*
+.idea/
+cluster_sbatch.sh
+cluster_sbatch_mpi.sh
+cluster_torchy.sh
+logs/
+.pytype/
+htmlcov/
+git_rewrite_commit_history.sh
+.vscode/
+# ignore for docker builds
+rl-trained-agents/
+.git/
+.mypy_cache/
