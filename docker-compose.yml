@@ -3,7 +3,7 @@ version: "3.8"
 services:
   franka-golf-saad:
     build: .
-    image: franka-golf-saad:latest
+    image: saad1998/franka-golf-saad
     container_name: franka-golf-saad
     working_dir: /workspace
     user: root
