@@ -10,7 +10,9 @@
   },
   "customizations": {
     "vscode": {
-      "settings": {},
+      "settings": {
+        "python.defaultInterpreterPath": "/opt/conda/bin/python"
+      },
       "extensions": [
         "ms-python.black-formatter"
       ]
