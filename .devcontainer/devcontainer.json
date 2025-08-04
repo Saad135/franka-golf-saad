@@ -1,0 +1,19 @@
+{
+  "name": "franka-golf-saad",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "franka-golf-saad",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "root",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/black:2": {},
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {},
+      "extensions": [
+        "ms-python.black-formatter"
+      ]
+    }
+  }
+}
