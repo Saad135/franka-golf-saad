@@ -7,6 +7,7 @@ RUN \
     micromamba activate && \
     uv pip install --system sai-rl && \
     uv pip install --system sai-mujoco && \
+    uv pip install --system mlflow && \
     uv cache clean
 
 WORKDIR /workspace
