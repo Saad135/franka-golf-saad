@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  franka-golf-saad:
+    build: .
+    image: franka-golf-saad:latest
+    container_name: franka-golf-saad
+    working_dir: /workspace
+    user: root
+    volumes:
+      - ./:/workspace
+    tty: true
+    stdin_open: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    network_mode: host
+    ipc: host
+    command: bash
+    restart: "no"
