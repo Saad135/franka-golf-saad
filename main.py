@@ -12,7 +12,7 @@ model = PPO("MlpPolicy", env)
 model.learn(total_timesteps=100)
 
 ## Benchmark the model locally
-sai.benchmark(model)
+sai.benchmark(model, use_custom_eval=True)
 
 ## Save and submit the model
 # sai.submit("Default PPO template", model)
