@@ -26,10 +26,13 @@ with mlflow.start_run():
     ## Define the model
     model = PPO("MlpPolicy", env)
     model.set_logger(loggers)
-    model.learn(total_timesteps=100, log_interval=1)
+    model.learn(total_timesteps=2048 * 4, log_interval=1, progress_bar=True)
 
     ## Benchmark the model locally
-    sai.benchmark(model, use_custom_eval=True)
+    # sai.benchmark(model, use_custom_eval=True)
 
 ## Save and submit the model
 # sai.submit("Default PPO template", model)
+
+## Watch the model in the SAI dashboard
+# sai.watch(model, use_custom_eval=True)
