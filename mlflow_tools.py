@@ -28,6 +28,50 @@ def load_model(run_id, artifact_path="model.zip"):
     return DDPG.load(mlflow_model_path)
 
 
+# Stable Baselines3 learn Callback to implement early stopping based on critic loss
+class EarlyStoppingCallback:
+    """
+    Callback to stop training if the critic loss does not improve for a certain number of steps.
+    """
+
+    def __init__(self, patience: int = 1000):
+        self.patience = patience
+        self.best_critic_loss = np.inf
+        self.steps_without_improvement = 0
+
+    def __call__(self, locals_, globals_):
+        critic_loss = locals_.get("critic_loss", np.inf)
+        if critic_loss < self.best_critic_loss:
+            self.best_critic_loss = critic_loss
+            self.steps_without_improvement = 0
+        else:
+            self.steps_without_improvement += 1
+
+        return self.steps_without_improvement < self.patience
+
+
+# Stable Baselines3 learn callback to record the best reward and stop training if it does not improve for a certain number of steps
+class EarlyStoppingBasedOnRewardCallback:
+    """
+    Callback to record the best reward and stop training if it does not improve for a certain number of steps.
+    """
+
+    def __init__(self, patience: int = 1000):
+        self.best_reward = -np.inf
+        self.patience = patience
+        self.steps_without_improvement = 0
+
+    def __call__(self, locals_, globals_):
+        current_reward = locals_.get("reward", -np.inf)
+        if current_reward > self.best_reward:
+            self.best_reward = current_reward
+            self.steps_without_improvement = 0
+        else:
+            self.steps_without_improvement += 1
+
+        return self.steps_without_improvement < self.patience
+
+
 # Copied from https://stable-baselines3.readthedocs.io/en/master/guide/integrations.html#mlflow
 class MLflowOutputFormat(KVWriter):
     """
