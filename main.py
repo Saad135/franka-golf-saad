@@ -46,6 +46,15 @@ def save_model(model, model_name):
     os.remove(f"{model_name}.zip")
 
 
+# Function to download the model from MLflow and load it
+def load_model(model_name):
+    """
+    Downloads the model from MLflow and loads it.
+    """
+    mlflow_model_path = mlflow.artifacts.download_artifacts(model_name)
+    return DDPG.load(mlflow_model_path)
+
+
 def main():
     # https://doi.org/10.3390/act14040165
     experiment_name = "DDPG Honelign et al."
