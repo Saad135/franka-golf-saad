@@ -1,15 +1,13 @@
-import os
 import sys
 
 import mlflow
 import numpy as np
 from sai_rl import SAIClient
-from stable_baselines3 import DDPG, PPO, HerReplayBuffer
-from stable_baselines3.common.logger import HumanOutputFormat, KVWriter, Logger
+from stable_baselines3 import DDPG
+from stable_baselines3.common.logger import HumanOutputFormat, Logger
 from stable_baselines3.common.noise import NormalActionNoise
-from stable_baselines3.ddpg import MultiInputPolicy
 
-from mlflow_tools import MLflowOutputFormat, save_model
+from mlflow_tools import EarlyStoppingCallback, MLflowOutputFormat, save_model
 
 
 def get_params():
@@ -80,7 +78,10 @@ def main():
         )
         model.set_logger(loggers)
         model.learn(
-            total_timesteps=params["total_timesteps"], log_interval=1, progress_bar=True
+            total_timesteps=params["total_timesteps"],
+            log_interval=1,
+            progress_bar=True,
+            callback=EarlyStoppingCallback(patience=1000),
         )
 
         # Save the model
