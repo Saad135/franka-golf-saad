@@ -95,3 +95,26 @@ class MLflowOutputFormat(KVWriter):
             if isinstance(value, np.ScalarType):
                 if not isinstance(value, str):
                     mlflow.log_metric(key, value, step)
+
+
+# Stable Baselines3 learn callback to calculate custom training metrics and log them to MLflow
+class CustomMetricsCallback:
+    """
+    Callback to calculate custom training metrics and log them to MLflow.
+    """
+
+    def __init__(self):
+        pass
+
+    def calculate_metrics(self, locals_, globals_) -> Dict[str, Any]:
+        """
+        Override this method to calculate and return custom metrics as a dictionary.
+        """
+        # Example: return {"loss": locals_.get("loss", 0)}
+        return {}
+
+    def __call__(self, locals_, globals_):
+        metrics = self.calculate_metrics(locals_, globals_)
+        for key, value in metrics.items():
+            mlflow.log_metric(key, value)
+        return True
