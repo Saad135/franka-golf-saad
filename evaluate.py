@@ -16,7 +16,7 @@ sai = SAIClient(comp_id="franka-ml-hiring")
 env = sai.make_env()
 
 # Download the model zip from MLflow and load it
-run_id = "fc2d3746a3034c338f02c7e6a5f38feb"
+run_id = "e9e728d441f7472e81eb573eac80f093"
 artifact_path = "ddpg_Honelign_et_al.zip"
 model = load_model(run_id=run_id, artifact_path=artifact_path)
 
