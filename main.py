@@ -35,7 +35,7 @@ with mlflow.start_run(log_system_metrics=True) as run:
         # "replay_buffer_class": HerReplayBuffer,
         # "n_sampled_goal": 4,
         # "goal_selection_strategy": "future",
-        "policy_class": "MlpPolicy",
+        "policy_class": "MlpPolicy",  # MultiLinePolicy relies on old gym api where observation space is a dict
         # "net_arch": [256, 256, 256],
     }
     # Log parameters to MLflow
