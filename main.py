@@ -1,3 +1,4 @@
+import os
 import sys
 
 import mlflow
@@ -32,6 +33,17 @@ def get_action_noise(env):
     """
     n_actions = env.action_space.shape[-1]
     return NormalActionNoise(mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions))
+
+
+# Fuction to save model parameters and log them to MLflow and then delete the model file
+def save_model(model, model_name):
+    """
+    Saves the model and logs it to MLflow.
+    """
+    model.save(model_name)
+    mlflow.log_artifact(f"{model_name}.zip")
+    # Optionally, you can delete the model file after logging
+    os.remove(f"{model_name}.zip")
 
 
 def main():
@@ -82,5 +94,6 @@ def main():
             total_timesteps=params["total_timesteps"], log_interval=1, progress_bar=True
         )
 
-    # Save the model
-    model.save("ddpg_Honelign_et_al")
+        # Save the model
+        model_name = "ddpg_Honelign_et_al"
+        save_model(model, model_name)
