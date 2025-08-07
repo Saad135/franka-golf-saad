@@ -9,7 +9,7 @@ from stable_baselines3.common.logger import HumanOutputFormat, KVWriter, Logger
 from stable_baselines3.common.noise import NormalActionNoise
 from stable_baselines3.ddpg import MultiInputPolicy
 
-from mlflow_tools import MLflowOutputFormat
+from mlflow_tools import MLflowOutputFormat, save_model
 
 
 def get_params():
@@ -17,7 +17,7 @@ def get_params():
     Returns the parameters for the DDPG model.
     """
     return {
-        "total_timesteps": 10000 * 5,
+        "total_timesteps": 10000 * 2,
         "learning_rate": 1e-3,
         "buffer_size": 100000,
         "batch_size": 2048,
@@ -33,26 +33,6 @@ def get_action_noise(env):
     """
     n_actions = env.action_space.shape[-1]
     return NormalActionNoise(mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions))
-
-
-# Fuction to save model parameters and log them to MLflow and then delete the model file
-def save_model(model, model_name):
-    """
-    Saves the model and logs it to MLflow.
-    """
-    model.save(model_name)
-    mlflow.log_artifact(f"{model_name}.zip")
-    # Optionally, you can delete the model file after logging
-    os.remove(f"{model_name}.zip")
-
-
-# Function to download the model from MLflow and load it
-def load_model(model_name):
-    """
-    Downloads the model from MLflow and loads it.
-    """
-    mlflow_model_path = mlflow.artifacts.download_artifacts(model_name)
-    return DDPG.load(mlflow_model_path)
 
 
 def main():
@@ -106,3 +86,7 @@ def main():
         # Save the model
         model_name = "ddpg_Honelign_et_al"
         save_model(model, model_name)
+
+
+if __name__ == "__main__":
+    main()
