@@ -26,7 +26,7 @@ sai = SAIClient(comp_id="franka-ml-hiring")
 with mlflow.start_run(log_system_metrics=True) as run:
     # Create params dict
     params = {
-        "total_timesteps": 10000,
+        "total_timesteps": 10000 * 5,
         "learning_rate": 1e-3,
         "buffer_size": 100000,
         "batch_size": 2048,
@@ -36,7 +36,7 @@ with mlflow.start_run(log_system_metrics=True) as run:
         # "n_sampled_goal": 4,
         # "goal_selection_strategy": "future",
         "policy_class": "MlpPolicy",
-        "net_arch": [256, 256, 256],
+        # "net_arch": [256, 256, 256],
     }
     # Log parameters to MLflow
     mlflow.log_params(params)
@@ -64,12 +64,12 @@ with mlflow.start_run(log_system_metrics=True) as run:
         #     n_sampled_goal=params["n_sampled_goal"],
         #     goal_selection_strategy=params["goal_selection_strategy"],
         # ),
-        policy_kwargs=dict(net_arch=params["net_arch"]),
+        # policy_kwargs=dict(net_arch=params["net_arch"]),
         verbose=2,
     )
     model.set_logger(loggers)
     model.learn(
-        total_timesteps=params["total_timesteps"], log_interval=10, progress_bar=True
+        total_timesteps=params["total_timesteps"], log_interval=1, progress_bar=True
     )
 
 # Save the model

@@ -16,4 +16,6 @@ env = sai.make_env()
 
 model = DDPG.load("ddpg_Honelign_et_al.zip", env=env)
 
-sai.benchmark(model=model, use_custom_eval=True)
+# sai.benchmark(model=model, use_custom_eval=True)
+
+sai.watch(model=model)
