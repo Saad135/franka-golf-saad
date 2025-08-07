@@ -1,3 +1,4 @@
+import os
 import sys
 
 import mlflow
@@ -8,13 +9,16 @@ from stable_baselines3.common.logger import HumanOutputFormat, KVWriter, Logger
 from stable_baselines3.common.noise import NormalActionNoise
 from stable_baselines3.ddpg import MultiInputPolicy
 
-from mlflow_tools import MLflowOutputFormat
+from mlflow_tools import MLflowOutputFormat, load_model
 
 ## Initialize the SAI client
 sai = SAIClient(comp_id="franka-ml-hiring")
 env = sai.make_env()
 
-model = DDPG.load("ddpg_Honelign_et_al.zip", env=env)
+# Download the model zip from MLflow and load it
+run_id = "fc2d3746a3034c338f02c7e6a5f38feb"
+artifact_path = "ddpg_Honelign_et_al.zip"
+model = load_model(run_id=run_id, artifact_path=artifact_path)
 
 # sai.benchmark(model=model, use_custom_eval=True)
 
