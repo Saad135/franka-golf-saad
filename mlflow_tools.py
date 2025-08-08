@@ -5,6 +5,7 @@ import mlflow
 import numpy as np
 from stable_baselines3 import DDPG
 from stable_baselines3.common.logger import KVWriter
+from stable_baselines3.common.vec_env import DummyVecEnv
 
 
 # Fuction to save model parameters and log them to MLflow and then delete the model file
@@ -133,6 +134,11 @@ class SB3EvaluationCallback:
 
     def __call__(self, locals_, globals_):
         env = locals_.get("env")
+
+        # Wrap the env in a DummyVecEnv if it is not already
+        if not isinstance(env, DummyVecEnv):
+            env = DummyVecEnv([lambda: env])
+
         eval_state = locals_.get("eval_state", {})
         reward, eval_state = self.eval_fn(env, eval_state)
         mlflow.log_metric("reward", reward)
