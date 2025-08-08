@@ -20,5 +20,5 @@ services:
               capabilities: [gpu]
     network_mode: host
     ipc: host
-    command: bash
+    command: python main.py
     restart: "no"
