@@ -7,12 +7,7 @@ from stable_baselines3 import DDPG
 from stable_baselines3.common.logger import HumanOutputFormat, Logger
 from stable_baselines3.common.noise import NormalActionNoise
 
-from mlflow_tools import (
-    EarlyStoppingCallback,
-    MLflowOutputFormat,
-    SB3EvaluationCallback,
-    save_model,
-)
+from mlflow_tools import MLflowOutputFormat, save_model
 from sai_tools import evaluation_fn
 
 
@@ -87,9 +82,6 @@ def main():
             total_timesteps=params["total_timesteps"],
             log_interval=1,
             progress_bar=True,
-            callback=SB3EvaluationCallback(
-                eval_fn=evaluation_fn,
-            ),
         )
 
         # Save the model
