@@ -1,5 +1,5 @@
 import os
-from typing import Any, Dict, Tuple, Union
+from typing import Any, Callable, Dict, Tuple, Union
 
 import mlflow
 import numpy as np
@@ -117,4 +117,25 @@ class CustomMetricsCallback:
         metrics = self.calculate_metrics(locals_, globals_)
         for key, value in metrics.items():
             mlflow.log_metric(key, value)
+        return True
+
+
+# Create a sb3 learn callback class based on the evaluation function in sai_tools.py
+class SB3EvaluationCallback:
+    """
+    Callback to evaluate the model during training and log metrics to MLflow.
+    """
+
+    def __init__(
+        self, eval_fn: Callable[[Any, Dict[str, Any]], Tuple[float, Dict[str, Any]]]
+    ):
+        self.eval_fn = eval_fn
+
+    def __call__(self, locals_, globals_):
+        env = locals_.get("env")
+        eval_state = locals_.get("eval_state", {})
+        reward, eval_state = self.eval_fn(env, eval_state)
+        mlflow.log_metric("reward", reward)
+        for key, value in eval_state.items():
+            mlflow.log_metric(f"eval_{key}", value)
         return True
