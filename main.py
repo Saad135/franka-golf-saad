@@ -72,6 +72,8 @@ def get_eval_env(comp_id):
 
 def main():
     experiment_name = "Colab DDPG"
+    remote_server_uri = "https://lively-decent-krill.ngrok-free.app:8080"
+    mlflow.set_tracking_uri(remote_server_uri)
     mlflow.set_experiment(experiment_name)
 
     loggers = Logger(
