@@ -67,11 +67,11 @@ def get_eval_env(comp_id):
     """
     Returns the evaluation environment.
     """
-    return Monitor(SAIClient(comp_id=comp_id).make_env())
+    return Monitor(SAIClient(comp_id=comp_id).make_env(use_custom_eval=False))
 
 
 def main():
-    experiment_name = "DDPG"
+    experiment_name = "Test colab DDPG"
     mlflow.set_experiment(experiment_name)
 
     loggers = Logger(
@@ -91,7 +91,7 @@ def main():
         mlflow.log_params(params)
 
         ## Make the environment
-        env = sai.make_env()
+        env = sai.make_env(use_custom_eval=False)
 
         # The noise objects for DDPG
         action_noise = get_action_noise(env)
