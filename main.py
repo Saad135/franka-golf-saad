@@ -71,7 +71,7 @@ def get_eval_env(comp_id):
 
 
 def main():
-    experiment_name = "Test colab DDPG"
+    experiment_name = "Colab DDPG"
     mlflow.set_experiment(experiment_name)
 
     loggers = Logger(
