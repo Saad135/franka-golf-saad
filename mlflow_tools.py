@@ -4,6 +4,7 @@ from typing import Any, Callable, Dict, Tuple, Union
 import mlflow
 import numpy as np
 from stable_baselines3 import DDPG
+from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.logger import KVWriter
 from stable_baselines3.common.vec_env import DummyVecEnv
 
@@ -74,3 +75,20 @@ class EarlyStoppingCallback:
             self.steps_without_improvement += 1
 
         return self.steps_without_improvement < self.patience
+
+
+# Extend the EvalCallback to log to mlflow
+class EvalCallbackWithMLflow(EvalCallback):
+    """
+    Custom EvalCallback that logs evaluation metrics to MLflow.
+    """
+
+    def _on_step(self) -> bool:
+        super()._on_step()
+        if self.eval_freq > 0 and self.n_calls % self.eval_freq == 0:
+            # Log evaluation metrics to MLflow
+            mlflow.log_metric(
+                f"eval_last_mean_reward", self.last_mean_reward, step=self.n_calls
+            )
+
+        return True

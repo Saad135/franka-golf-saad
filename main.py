@@ -9,9 +9,10 @@ from stable_baselines3.common.callbacks import (
     StopTrainingOnNoModelImprovement,
 )
 from stable_baselines3.common.logger import HumanOutputFormat, Logger
+from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.noise import NormalActionNoise
 
-from mlflow_tools import MLflowOutputFormat, save_model
+from mlflow_tools import EvalCallbackWithMLflow, MLflowOutputFormat, save_model
 from sai_tools import evaluation_fn
 
 
@@ -48,7 +49,7 @@ def get_learn_callbacks(eval_env):
         min_evals=5,
         verbose=1,
     )
-    eval_callback = EvalCallback(
+    eval_callback = EvalCallbackWithMLflow(
         eval_env,
         eval_freq=1000,
         callback_after_eval=stop_train_callback,
@@ -66,7 +67,7 @@ def get_eval_env(comp_id):
     """
     Returns the evaluation environment.
     """
-    return SAIClient(comp_id=comp_id).make_env()
+    return Monitor(SAIClient(comp_id=comp_id).make_env())
 
 
 def main():
@@ -130,7 +131,7 @@ def main():
 
         # Save the best model
         best_model_path = f"./logs/best_model"
-        save_model(model, best_model_path)
+        mlflow.log_artifact(f"{best_model_path}.zip")
 
         # Save the final model
         model_name = f"final_ddpg_{params['total_timesteps']}_steps"
