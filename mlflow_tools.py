@@ -84,11 +84,11 @@ class EvalCallbackWithMLflow(EvalCallback):
     """
 
     def _on_step(self) -> bool:
-        super()._on_step()
+        continue_training = super()._on_step()
         if self.eval_freq > 0 and self.n_calls % self.eval_freq == 0:
             # Log evaluation metrics to MLflow
             mlflow.log_metric(
                 f"eval_last_mean_reward", self.last_mean_reward, step=self.n_calls
             )
 
-        return True
+        return continue_training
