@@ -4,6 +4,10 @@ import mlflow
 import numpy as np
 from sai_rl import SAIClient
 from stable_baselines3 import DDPG
+from stable_baselines3.common.callbacks import (
+    EvalCallback,
+    StopTrainingOnNoModelImprovement,
+)
 from stable_baselines3.common.logger import HumanOutputFormat, Logger
 from stable_baselines3.common.noise import NormalActionNoise
 
@@ -34,6 +38,37 @@ def get_action_noise(env):
     return NormalActionNoise(mean=np.zeros(n_actions), sigma=0.1 * np.ones(n_actions))
 
 
+def get_learn_callbacks(eval_env):
+    """
+    Returns the callbacks for the training of the DDPG model.
+    """
+    # Stop training if there is no improvement after more than 3 evaluations
+    stop_train_callback = StopTrainingOnNoModelImprovement(
+        max_no_improvement_evals=3,
+        min_evals=5,
+        verbose=1,
+    )
+    eval_callback = EvalCallback(
+        eval_env,
+        eval_freq=1000,
+        callback_after_eval=stop_train_callback,
+        best_model_save_path="./logs/",
+        verbose=1,
+    )
+
+    return [
+        # Add any other callbacks you want to use
+        eval_callback,
+    ]
+
+
+def get_eval_env(comp_id):
+    """
+    Returns the evaluation environment.
+    """
+    return SAIClient(comp_id=comp_id).make_env()
+
+
 def main():
     # https://doi.org/10.3390/act14040165
     experiment_name = "DDPG Honelign et al."
@@ -44,8 +79,9 @@ def main():
         output_formats=[HumanOutputFormat(sys.stdout), MLflowOutputFormat()],
     )
 
+    comp_id = "franka-ml-hiring"  # Change this to your competition ID if needed
     ## Initialize the SAI client
-    sai = SAIClient(comp_id="franka-ml-hiring")
+    sai = SAIClient(comp_id=comp_id)
 
     # Create params dict
     params = get_params()
@@ -78,14 +114,26 @@ def main():
             verbose=2,
         )
         model.set_logger(loggers)
+
+        # Get the evaluation environment
+        eval_env = get_eval_env(comp_id)
+
+        # Get the callbacks
+        callbacks = get_learn_callbacks(eval_env)
+
         model.learn(
             total_timesteps=params["total_timesteps"],
             log_interval=1,
             progress_bar=True,
+            callback=callbacks,
         )
 
-        # Save the model
-        model_name = "ddpg_Honelign_et_al"
+        # Save the best model
+        best_model_path = f"./logs/best_model"
+        save_model(model, best_model_path)
+
+        # Save the final model
+        model_name = f"final_ddpg_{params['total_timesteps']}_steps"
         save_model(model, model_name)
 
 
