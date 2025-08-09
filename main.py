@@ -112,6 +112,7 @@ def main():
             #     goal_selection_strategy=params["goal_selection_strategy"],
             # ),
             # policy_kwargs=dict(net_arch=params["net_arch"]),
+            device="cuda",
             verbose=2,
         )
         model.set_logger(loggers)
