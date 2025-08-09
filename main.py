@@ -71,8 +71,7 @@ def get_eval_env(comp_id):
 
 
 def main():
-    # https://doi.org/10.3390/act14040165
-    experiment_name = "DDPG Honelign et al."
+    experiment_name = "DDPG"
     mlflow.set_experiment(experiment_name)
 
     loggers = Logger(
