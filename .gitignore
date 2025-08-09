@@ -204,3 +204,4 @@ __marimo__/
 
 # Disable mlruns for now
 mlruns/
+logs/

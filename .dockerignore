@@ -18,3 +18,7 @@ rl-trained-agents/
 .git/
 .mypy_cache/
 .venv
+
+# project specific
+mlruns/
+logs/
